@@ -1,13 +1,18 @@
 package com.terrencewatson.com.terrencewatson.db;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.apache.log4j.Logger;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by twatson on 8/7/14.
@@ -41,6 +46,17 @@ public class Db implements InitializingBean {
     }
 
     public ExecutionEngine executionEngine() { return this.engine; }
+
+    public QueryBody handleQueryBody(String query) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        try {
+            QueryBody queryBody = mapper.readValue(query, QueryBody.class);
+            return queryBody;
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
