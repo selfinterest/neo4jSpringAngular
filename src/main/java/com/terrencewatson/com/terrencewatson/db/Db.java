@@ -7,6 +7,7 @@ import org.neo4j.cypher.javacompat.ExecutionEngine;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,9 @@ import java.io.IOException;
  */
 @Service
 public class Db implements InitializingBean {
+
+    @Autowired
+    private GraphDatabaseService graphDatabaseService;
 
     private static Db instance;
     private GraphDatabaseService graphDb;
@@ -33,6 +37,7 @@ public class Db implements InitializingBean {
         return file2.getPath();
     }
 
+    //TODO: eliminate this, rely only on Spring to instantiate graph database
     public Db(){
         this.graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(getDatabaseDirectory());
         this.engine = new ExecutionEngine( this.graphDb );
