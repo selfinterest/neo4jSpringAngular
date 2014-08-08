@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.management.Query;
 import java.io.IOException;
 
 /**
@@ -26,10 +27,19 @@ public class RawController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public String post(@RequestBody String query){
+        /*try {
+            QueryBody queryBody = db.handleQueryBody(query);
+            return queryBody.execute().dumpToString();
+
+            //return queryBody.toString();
+        } catch (IOException e) {
+            return e.toString();
+        }*/
         ExecutionResult result;
-        try (Transaction ignored = db.graphDb().beginTx()){
+        try (Transaction tx = db.graphDb().beginTx()){
             QueryBody queryBody = db.handleQueryBody(query);
             result = db.executionEngine().execute(queryBody.getQuery());
+            tx.success();
             return result.dumpToString();
         } catch (Error e){
             return e.toString();

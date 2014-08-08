@@ -1,0 +1,19 @@
+{"query": [
+    "create (matrix1:Movie {id : '603', title : 'The Matrix', year : '1999-03-31'})",
+    "(matrix2:Movie {id : '604', title : 'The Matrix Reloaded', year : '2003-05-07'})",
+    "(matrix3:Movie {id : '605', title : 'The Matrix Revolutions', year : '2003-10-27'})",
+    "(neo:Actor {name:'Keanu Reeves'})",
+    "(morpheus:Actor {name:'Laurence Fishburne'})",
+    "(trinity:Actor {name:'Carrie-Anne Moss'})",
+    "(matrix1)<-[:ACTS_IN {role : 'Neo'}]-(neo)",
+    "(matrix2)<-[:ACTS_IN {role : 'Neo'}]-(neo)",
+    "(matrix3)<-[:ACTS_IN {role : 'Neo'}]-(neo)",
+    "(matrix1)<-[:ACTS_IN {role : 'Morpheus'}]-(morpheus)",
+    "(matrix2)<-[:ACTS_IN {role : 'Morpheus'}]-(morpheus)",
+    "(matrix3)<-[:ACTS_IN {role : 'Morpheus'}]-(morpheus)",
+    "(matrix1)<-[:ACTS_IN {role : 'Trinity'}]-(trinity)",
+    "(matrix2)<-[:ACTS_IN {role : 'Trinity'}]-(trinity)",
+    "(matrix3)<-[:ACTS_IN {role : 'Trinity'}]-(trinity)"
+    ]
+}
+
