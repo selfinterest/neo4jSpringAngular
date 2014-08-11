@@ -1,11 +1,8 @@
-package com.terrencewatson.com.terrencewatson.db;
+package com.terrencewatson.query;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.log4j.Logger;
 import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.graphdb.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

@@ -1,20 +1,12 @@
 package com.terrencewatson;
 
 
-import com.terrencewatson.com.terrencewatson.db.QueryBody;
-import org.neo4j.cypher.javacompat.ExecutionEngine;
-import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
-import org.neo4j.kernel.impl.util.StringLogger;
+import com.terrencewatson.query.QueryBody;
 
-import org.neo4j.rest.graphdb.query.RestCypherQueryEngine;
-import org.neo4j.rest.graphdb.util.QueryResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 
 //import org.springframework.data.neo4j.annotation.QueryResult;
-import org.neo4j.rest.graphdb.util.QueryResult;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
@@ -54,19 +46,18 @@ public class RawController {
     public String post(@RequestBody String query){
         Neo4jTemplate template = neo4jTemplate();
         Result<Map<String, Object>> result;
-        Map<String, Object> params = null;
+
         QueryBody queryBody = QueryBody.getQueryBodyFromString(query);
-        result = template.query(queryBody.getQuery(), params);
+        result = template.query(queryBody.getQuery(), null);
 
         StringBuilder stringBuilder = new StringBuilder();
-        String rows = "";
-        for(Map<String, Object> row: result){
+
+        for(Map<String, Object> row : result){
             for(Map.Entry<String, Object> column: row.entrySet()) {
                 stringBuilder.append(column.getKey()).append(": ").append(column.getValue()).append("; ");
-                //rows += column.getKey() + ": " + column.getValue() + "; ";
             }
             stringBuilder.append("\n");
-            //rows += "\n";
+
         }
         return stringBuilder.toString();
 
