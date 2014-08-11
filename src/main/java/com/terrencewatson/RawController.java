@@ -4,6 +4,7 @@ package com.terrencewatson;
 import com.terrencewatson.query.QueryBody;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 //import org.springframework.data.neo4j.annotation.QueryResult;
@@ -29,11 +30,13 @@ import java.util.Map;
 @ComponentScan
 public class RawController {
 
+
     @Autowired
     private SpringRestGraphDatabase graphDatabaseService;
 
     @Autowired
     private PlatformTransactionManager neo4jTransactionManager;
+
 
     private Neo4jTemplate neo4jTemplate(){
         return new Neo4jTemplate(graphDatabaseService, neo4jTransactionManager);
@@ -45,10 +48,10 @@ public class RawController {
     @Transactional
     public String post(@RequestBody String query){
         Neo4jTemplate template = neo4jTemplate();
-        Result<Map<String, Object>> result;
 
         QueryBody queryBody = QueryBody.getQueryBodyFromString(query);
-        result = template.query(queryBody.getQuery(), null);
+        Result<Map<String, Object>> result = template.query(queryBody.getQuery(), null);
+
 
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -62,5 +65,6 @@ public class RawController {
         return stringBuilder.toString();
 
     }
+
 
 }

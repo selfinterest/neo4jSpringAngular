@@ -23,6 +23,9 @@
         <property name="userTransaction" ref="neo4jUserTransactionService" />
     </bean>
 
+    <!--<bean id="template" class="org.springframework.data.neo4j.conversion.">
+
+    </bean> -->
     <tx:annotation-driven transaction-manager="neo4jTransactionManager" />
 
 

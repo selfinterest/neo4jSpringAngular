@@ -1,12 +1,9 @@
 package com.terrencewatson.config;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.management.TransactionManager;
-import org.neo4j.rest.graphdb.RestGraphDatabase;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
@@ -19,12 +16,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 
 @Configuration
-@EnableNeo4jRepositories(basePackages = "org.springframework.data.neo4j.repository")
+@EnableNeo4jRepositories(basePackages = "com.terrencewatson.domain")
+//@EnableNeo4jRepositories(basePackages = "org.springframework.data.neo4j.repository")
 @Import(AppConfig.class)
+@ImportResource("classpath:META-INF/spring/spring-data-context.xml")
 @EnableTransactionManagement
 @Component
 public class Neo4jStandalone extends Neo4jConfiguration {
 
+    Neo4jStandalone(){
+        setBasePackage("com.terrencewatson.domain");
+    }
     //@Autowired
     //TransactionManager transactionManager;
 
@@ -75,4 +77,12 @@ public class Neo4jStandalone extends Neo4jConfiguration {
     public Neo4jTemplate neo4jTemplate(SpringRestGraphDatabase graphDatabaseService) throws Exception {
         return new Neo4jTemplate(graphDatabaseService, neo4jTransactionManager());
     }
+
+    @Bean
+    public Neo4jTemplate getNeo4jTemplate() throws Exception {
+        return new Neo4jTemplate(this.graphDatabaseService(), this.neo4jTransactionManager());
+    }
+
+
+
 }
