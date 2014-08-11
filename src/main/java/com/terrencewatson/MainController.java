@@ -25,11 +25,10 @@ import java.util.Map;
 @ComponentScan
 public class MainController {
 
-    @Autowired
-    private Db db = Db.get();
 
 
-    @RequestMapping(method = RequestMethod.GET)
+
+    /*@RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public String get(){
         String rows = "";
@@ -56,7 +55,7 @@ public class MainController {
             return "Nothing found!";
         }
 
-    }
+    }*/
 
 
 

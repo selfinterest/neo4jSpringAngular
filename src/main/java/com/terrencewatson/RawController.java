@@ -27,30 +27,19 @@ public class RawController {
     @Autowired
     private GraphDatabaseService graphDatabaseService;
 
-    @Autowired
-    private Db db = Db.get();
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public String post(@RequestBody String query){
-        /*try {
-            QueryBody queryBody = db.handleQueryBody(query);
-            return queryBody.execute().dumpToString();
 
-            //return queryBody.toString();
-        } catch (IOException e) {
-            return e.toString();
-        }*/
         ExecutionResult result;
         try (Transaction tx = graphDatabaseService.beginTx()){
             ExecutionEngine engine = new ExecutionEngine( this.graphDatabaseService );
-            QueryBody queryBody = db.handleQueryBody(query);
+            QueryBody queryBody = QueryBody.getQueryBodyFromString(query);
             result = engine.execute(queryBody.getQuery());
             tx.success();
             return result.dumpToString();
-        } catch (Error e){
-            return e.toString();
-        } catch (IOException e) {
+        } catch (Error e) {
             return e.toString();
         }
     }

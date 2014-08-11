@@ -19,12 +19,12 @@ import java.io.IOException;
  * Created by twatson on 8/7/14.
  */
 @Service
-public class Db implements InitializingBean {
+public class Db {
 
     @Autowired
     private GraphDatabaseService graphDatabaseService;
 
-    private static Db instance;
+    /*private static Db instance;
     private GraphDatabaseService graphDb;
     private ExecutionEngine engine;
     static Logger log = Logger.getLogger(Neo4jUtilsImpl.class.getName());
@@ -85,5 +85,5 @@ public class Db implements InitializingBean {
 
     public static Db get(){
         return instance;
-    }
+    }*/
 }
