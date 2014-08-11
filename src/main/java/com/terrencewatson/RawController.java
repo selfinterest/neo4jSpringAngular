@@ -58,14 +58,17 @@ public class RawController {
         QueryBody queryBody = QueryBody.getQueryBodyFromString(query);
         result = template.query(queryBody.getQuery(), params);
 
+        StringBuilder stringBuilder = new StringBuilder();
         String rows = "";
         for(Map<String, Object> row: result){
             for(Map.Entry<String, Object> column: row.entrySet()) {
-                rows += column.getKey() + ": " + column.getValue() + "; ";
+                stringBuilder.append(column.getKey()).append(": ").append(column.getValue()).append("; ");
+                //rows += column.getKey() + ": " + column.getValue() + "; ";
             }
-            rows += "\n";
+            stringBuilder.append("\n");
+            //rows += "\n";
         }
-        return rows;
+        return stringBuilder.toString();
 
     }
 
