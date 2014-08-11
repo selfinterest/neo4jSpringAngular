@@ -13,16 +13,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 
 //import org.springframework.data.neo4j.annotation.QueryResult;
-
+import org.neo4j.rest.graphdb.util.QueryResult;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.management.Query;
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -40,35 +39,26 @@ public class RawController {
 
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
+    @Transactional
     public String post(@RequestBody String query){
-        //ExecutionResult result;
-        //QueryResult res
-        org.neo4j.rest.graphdb.util.QueryResult<Map<String, Object>> result;
-        try (Transaction tx = graphDatabaseService.beginTx()){
-            RestCypherQueryEngine engine = new RestCypherQueryEngine(graphDatabaseService.getRestAPI());
-            //ExecutionEngine engine = new ExecutionEngine( this.graphDatabaseService, StringLogger.SYSTEM );
-            QueryBody queryBody = QueryBody.getQueryBodyFromString(query);
-            Map<String, Object> params = null;
 
-            result = engine.query(queryBody.getQuery(), params);
-            //result = (ExecutionResult) engine.query(queryBody.getQuery(), params);
-            //result = engine.execute(queryBody.getQuery());
-            //QueryResult<Map<String, Object>>
-            tx.success();
-            String rows = "";
-            for(Map<String, Object> row: result){
-                for(Map.Entry<String, Object> column: row.entrySet()) {
-                    rows += column.getKey() + ": " + column.getValue() + "; ";
-                }
-                rows += "\n";
+        QueryResult<Map<String, Object>> result;
+        RestCypherQueryEngine engine = new RestCypherQueryEngine(graphDatabaseService.getRestAPI());  //As per @link http://stackoverflow.com/questions/21132234/null-exception-error-when-executing-cypher-query-from-java-code-neo4j
+        QueryBody queryBody = QueryBody.getQueryBodyFromString(query);
+        Map<String, Object> params = null;
+
+        result = engine.query(queryBody.getQuery(), params);
+
+        String rows = "";
+        for(Map<String, Object> row: result){
+            for(Map.Entry<String, Object> column: row.entrySet()) {
+                rows += column.getKey() + ": " + column.getValue() + "; ";
             }
-            return rows;
-            //return graphDatabaseService.toString();
-            //return queryBody.getQuery();
-
-        } catch (Error e) {
-            return e.toString();
+            rows += "\n";
         }
+        return rows;
+
+
     }
 
 }

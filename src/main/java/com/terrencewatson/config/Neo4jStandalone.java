@@ -9,6 +9,7 @@ import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * Created by twatson on 8/11/14.
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 @Configuration
 @EnableNeo4jRepositories(basePackages = "org.springframework.data.neo4j.repository")
 @Import(AppConfig.class)
+@EnableTransactionManagement
 public class Neo4jStandalone extends Neo4jConfiguration {
 
     @Bean
