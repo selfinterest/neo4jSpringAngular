@@ -1,20 +1,8 @@
 package com.terrencewatson;
 
-import com.terrencewatson.com.terrencewatson.db.Db;
-import com.terrencewatson.com.terrencewatson.db.Neo4jUtils;
-import com.terrencewatson.com.terrencewatson.db.Neo4jUtilsImpl;
-import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Transaction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by twatson on 8/6/14.

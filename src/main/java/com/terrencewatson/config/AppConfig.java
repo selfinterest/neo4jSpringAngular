@@ -46,11 +46,13 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return resolver;
     }
 
-    @Bean(destroyMethod = "shutdown")
+    /*@Bean(destroyMethod = "shutdown")
     public GraphDatabaseService graphDatabaseService(){
         return new GraphDatabaseFactory().newEmbeddedDatabase("target/graph.db");
         //return new EmbeddedGraphDatabase()
-    }
+    }*/
+
+
 
 
 

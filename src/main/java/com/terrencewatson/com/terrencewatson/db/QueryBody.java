@@ -21,7 +21,7 @@ public class QueryBody {
 
     private ExecutionResult result = null;
 
-    static Logger log = Logger.getLogger(Neo4jUtilsImpl.class.getName());
+
     public void setQuery(String query){
         this.query = query;
     }
