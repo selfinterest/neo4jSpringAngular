@@ -3,3 +3,5 @@
 .extract
 .extract/*
 target/*
+target
+/tmp/*
