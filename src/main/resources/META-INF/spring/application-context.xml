@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
      <import resource="spring-data-context.xml" />
 
     <bean id="graphDatabaseService" class="org.springframework.data.neo4j.rest.SpringRestGraphDatabase">
         <constructor-arg value="http://localhost:7474/db/data/" />
     </bean>
+
+    <bean id="neo4jTransactionManagerService"
+          class="org.neo4j.kernel.impl.transaction.SpringTransactionManager">
+        <constructor-arg ref="graphDatabaseService" />
+    </bean>
+    <bean id="neo4jUserTransactionService" class="org.neo4j.kernel.impl.transaction.UserTransactionImpl">
+        <constructor-arg ref="graphDatabaseService" />
+    </bean>
+
+    <bean id="neo4jTransactionManager"
+          class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager" ref="neo4jTransactionManagerService" />
+        <property name="userTransaction" ref="neo4jUserTransactionService" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="neo4jTransactionManager" />
+
 
 </beans>
