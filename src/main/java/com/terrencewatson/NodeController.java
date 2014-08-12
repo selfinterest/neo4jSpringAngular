@@ -26,8 +26,10 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/api/node")
 public class NodeController {
-    @Autowired
-    NodeRepository nodeRepository;
+    /*@Autowired
+    NodeRepository nodeRepository;*/
+
+    private NodeRepository nodeRepository;
 
     @Autowired
     private SpringRestGraphDatabase graphDatabaseService;
@@ -38,6 +40,16 @@ public class NodeController {
 
     private Neo4jTemplate neo4jTemplate(){
         return new Neo4jTemplate(graphDatabaseService, neo4jTransactionManager);
+    }
+
+    @Autowired
+    public NodeController(NodeRepository nodeRepository){
+        this.nodeRepository = nodeRepository;
+    }
+
+
+    public NodeController(){
+
     }
 
     /*@RequestMapping(value="/{id}")
@@ -55,7 +67,8 @@ public class NodeController {
     @RequestMapping(value="/-/byType/{nodeType}")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> showByNodeType(Model model, @PathVariable String nodeType){
+    public ResponseEntity<String> showByNodeType(@PathVariable String nodeType){
+
         Collection<Node> nodes = nodeRepository.findByNodeType(nodeType);
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -71,11 +84,20 @@ public class NodeController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> create(@RequestBody String nodeJson){
+    public ResponseEntity<String> create(@RequestBody String nodeJson) throws JsonProcessingException {
         Node node = Node.getNodeFromJsonString(nodeJson);
-        System.out.print(nodeJson);
 
         nodeRepository.save(node);
-        return new ResponseEntity<String>("OK", HttpStatus.OK);
+        ObjectMapper mapper = new ObjectMapper();
+        return new ResponseEntity<String>(node.toJson(), HttpStatus.OK);
+        //return new ResponseEntity<String>("OK", HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value="/{id}")
+    @ResponseBody
+    @Transactional
+    public ResponseEntity<String> updateById(@PathVariable String id) {
+        Node node = nodeRepository.findById(id);
+        return null;
     }
 }

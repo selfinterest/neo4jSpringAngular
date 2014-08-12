@@ -3,6 +3,7 @@ package com.terrencewatson.config;
 import com.terrencewatson.domain.repositories.NodeRepository;
 import org.mockito.Mock;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
  */
 
 @Configuration
+@ComponentScan
 public class TestContext {
     @Mock
     NodeRepository nodeRepository;

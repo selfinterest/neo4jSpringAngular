@@ -20,6 +20,8 @@ import java.io.IOException;
 public class Node {
 
 
+    @
+    private String nodeId;
 
     private String displayName;
 
@@ -40,6 +42,8 @@ public class Node {
     public void setId(Long id) {
         this.id = id;
     }
+
+
 
     /*public Long getNodeId() {
         return nodeId;
@@ -104,6 +108,18 @@ public class Node {
             return null;
         }
 
-
     }
+
+    public String toJson(){
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
