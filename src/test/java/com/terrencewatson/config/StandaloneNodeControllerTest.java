@@ -56,10 +56,13 @@ public class StandaloneNodeControllerTest  {
         this.testCollection = new ArrayList();
         this.testNode = new Node();
         this.testNode.setNodeType("test");
+        this.testNode.setDisplayName("Some node");
+        this.testNode.setObjectID("abcd");
         this.testCollection.add(testNode);
         //mockMvc = MockMvcBuilders.standaloneSetup(new NodeController()).build();
-        when(nodeRepository.findByNodeType("course")).thenReturn(testCollection);
-
+        when(nodeRepository.findByType("course")).thenReturn(testCollection);
+        when(nodeRepository.findById("abcd")).thenReturn(testNode);
+        when(nodeRepository.findById("efgh")).thenReturn(null);
         nodeController = new NodeController(nodeRepository);
         MockitoAnnotations.initMocks(this);
 
@@ -67,21 +70,28 @@ public class StandaloneNodeControllerTest  {
 
     @Test
     public void testShowByType() throws Exception {
+        String expectedJsonResponse = "[{\"objectID\":\"abcd\",\"displayName\":\"Some node\",\"type\":\"test\",\"label\":null,\"order\":0,\"id\":null}]";
+
         model.addAttribute("nodeType", "course");
         ResponseEntity<String> response = nodeController.showByNodeType("course");
-        assertTrue(response.getBody().contains("[{\"displayName\":null,\"nodeType\":\"test\",\"label\":null,\"order\":0,\"id\":null}]"));
+        //System.out.println(response.getBody());
+        assertTrue(response.getBody().contains(expectedJsonResponse));
 
     }
 
     @Test
     public void testCreate() throws JsonProcessingException {
-        ResponseEntity<String> response = nodeController.create("{\"displayName\":\"Test node\",\"nodeType\":\"course\",\"label\":null,\"order\":0,\"id\":null}");
+        ResponseEntity<String> response = nodeController.create("{\"displayName\":\"Test node\",\"type\":\"course\",\"label\":null,\"order\":0,\"id\":null}");
         assertTrue(response.getBody().contains("Test node"));
         assertTrue(response.toString().contains("200 OK"));
     }
 
     @Test
-    public void testUpdateById(){
-        ResponseEntity<String> response = nodeController.updateById("abcd");
+    public void testGetById(){
+        ResponseEntity<String> response = nodeController.getById("abcd");
+        assertTrue(response.getBody().contains("abcd"));
+
+        response = nodeController.getById("efgh");
+        assertTrue(response.toString().contains("404"));
     }
 }

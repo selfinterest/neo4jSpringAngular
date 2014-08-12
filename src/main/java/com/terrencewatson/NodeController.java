@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,8 @@ import java.util.Collection;
 public class NodeController {
     /*@Autowired
     NodeRepository nodeRepository;*/
+
+    @Autowired Neo4jOperations template;
 
     private NodeRepository nodeRepository;
 
@@ -69,7 +72,7 @@ public class NodeController {
     @Transactional
     public ResponseEntity<String> showByNodeType(@PathVariable String nodeType){
 
-        Collection<Node> nodes = nodeRepository.findByNodeType(nodeType);
+        Collection<Node> nodes = nodeRepository.findByType(nodeType);
         ObjectMapper mapper = new ObjectMapper();
         try {
             return new ResponseEntity<String>(mapper.writeValueAsString(nodes), HttpStatus.OK);
@@ -93,11 +96,18 @@ public class NodeController {
         //return new ResponseEntity<String>("OK", HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value="/{id}")
+    @RequestMapping(method = RequestMethod.GET, value="/{id}")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> updateById(@PathVariable String id) {
+    public ResponseEntity<String> getById(@PathVariable String id) {
         Node node = nodeRepository.findById(id);
-        return null;
+
+        //Node node = (Node) template.getNode(1);
+        //Node node = nodeRepository.findById(id);
+        if(node != null){
+           return new ResponseEntity<String>(node.toJson(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<String>("NOT OK", HttpStatus.NOT_FOUND);
+        }
     }
 }

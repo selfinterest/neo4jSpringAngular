@@ -4,10 +4,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Persistent;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.template.Neo4jOperations;
 
 import java.io.IOException;
 
@@ -15,25 +17,30 @@ import java.io.IOException;
  * Created by twatson on 8/11/14.
  */
 
+
 @NodeEntity
 @Persistent
+
+
 public class Node {
 
+    @Autowired Neo4jOperations template;
 
-    @
-    private String nodeId;
 
-    private String displayName;
+    @Indexed(unique=true)
+    String objectID;
 
-    private String nodeType;
+    String displayName;
 
-    private String label;
+    String type;
 
-    private int order;
+    String label;
+
+    int order;
 
 
     @GraphId
-    private Long id;
+    Long id;
 
     public Long getId() {
         return id;
@@ -45,13 +52,13 @@ public class Node {
 
 
 
-    /*public Long getNodeId() {
-        return nodeId;
+    public String getObjectID() {
+        return objectID;
     }
 
-    public void setNodeId(Long nodeId) {
-        this.nodeId = nodeId;
-    }*/
+    public void setObjectID(String objectID ) {
+        this.objectID = objectID;
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -61,12 +68,12 @@ public class Node {
         this.displayName = displayName;
     }
 
-    public String getNodeType() {
-        return nodeType;
+    public String getType() {
+        return type;
     }
 
-    public void setNodeType(String nodeType) {
-        this.nodeType = nodeType;
+    public void setNodeType(String type) {
+        this.type = type;
     }
 
     public String getLabel() {
