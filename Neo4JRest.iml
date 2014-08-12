@@ -92,8 +92,8 @@
     <orderEntry type="library" name="Maven: org.neo4j:neo4j:2.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-neo4j-rest:3.1.2.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: org.neo4j:neo4j-rest-graphdb:2.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.9.7" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.13" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.9" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.13" level="project" />
     <orderEntry type="library" name="Maven: com.sun.jersey:jersey-client:1.9" level="project" />
     <orderEntry type="library" name="Maven: com.sun.jersey:jersey-core:1.9" level="project" />
