@@ -18,12 +18,25 @@
             <artifactId>spring-webmvc</artifactId>
             <version>4.0.6.RELEASE</version>
         </dependency>
+
+        <!-- testing -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>4.0.6.RELEASE</version>
             <scope>test</scope>
-
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
@@ -31,6 +44,7 @@
             <version>1.0.0.GA</version>
             <scope>runtime</scope>
         </dependency>
+
 
         <dependency>
             <groupId>org.neo4j</groupId>
