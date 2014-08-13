@@ -18,4 +18,5 @@ public interface NodeRepository extends GraphRepository<Node>{
     Collection<Node> findByType(String type);
     Node findByObjectID(String objectID);
 
+    Node deleteByObjectID(String objectID);
 }

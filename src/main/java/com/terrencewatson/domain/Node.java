@@ -57,6 +57,7 @@ public class Node {
     }
 
     public void setObjectID(String objectID ) {
+        objectID = objectID.replace(".", "-");
         this.objectID = objectID;
     }
 

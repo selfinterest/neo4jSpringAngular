@@ -63,6 +63,7 @@ public class StandaloneNodeControllerTest  {
         when(nodeRepository.findByType("course")).thenReturn(testCollection);
         when(nodeRepository.findById("abcd")).thenReturn(testNode);
         when(nodeRepository.findById("efgh")).thenReturn(null);
+        when(nodeRepository.deleteById("abcd")).thenReturn(testNode);
         nodeController = new NodeController(nodeRepository);
         MockitoAnnotations.initMocks(this);
 
@@ -94,4 +95,23 @@ public class StandaloneNodeControllerTest  {
         response = nodeController.getById("efgh");
         assertTrue(response.toString().contains("404"));
     }
+
+    @Test
+    public void testUpdateById(){
+        Node newNode = new Node();
+        newNode.setDisplayName("I am a new node");
+        newNode.setNodeType("course");
+        ResponseEntity<String> response = nodeController.updateById("abcd", newNode.toJson());
+        assertTrue(response.getBody().contains("I am a new node"));
+        assertTrue(response.getBody().contains("abcd"));
+        response = nodeController.updateById("efgh", newNode.toJson());
+
+        assertTrue(response.toString().contains("404"));
+    }
+
+    @Test
+    public void testDeleteById(){
+        ResponseEntity<String> response = nodeController.deleteById("abcd");
+    }
+
 }

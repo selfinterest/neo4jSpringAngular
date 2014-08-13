@@ -72,7 +72,7 @@ public class Neo4jStandalone extends Neo4jConfiguration {
         }
     }*/
 
-
+    /*
     @Bean
     public Neo4jTemplate neo4jTemplate(SpringRestGraphDatabase graphDatabaseService) throws Exception {
         return new Neo4jTemplate(graphDatabaseService, neo4jTransactionManager());
@@ -82,7 +82,7 @@ public class Neo4jStandalone extends Neo4jConfiguration {
     public Neo4jTemplate getNeo4jTemplate() throws Exception {
         return new Neo4jTemplate(this.graphDatabaseService(), this.neo4jTransactionManager());
     }
-
+    */
 
 
 }
