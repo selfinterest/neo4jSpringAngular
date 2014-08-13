@@ -3,10 +3,12 @@ package com.terrencewatson;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrencewatson.domain.Node;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.neo4j.conversion.Result;
+import org.springframework.data.neo4j.core.GraphDatabase;
 import org.springframework.data.neo4j.rest.SpringRestGraphDatabase;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.data.neo4j.template.Neo4jOperations;
@@ -32,7 +34,9 @@ public class NodeController {
     /*@Autowired
     NodeRepository nodeRepository;*/
 
-    @Autowired Neo4jOperations template;
+
+
+    //@Autowired Neo4jOperations template;
 
     //@Autowired RestTemplate template;
 
@@ -46,20 +50,24 @@ public class NodeController {
     private PlatformTransactionManager neo4jTransactionManager;
 
     @Autowired
-    public NodeController(NodeRepository nodeRepository){
+    private GraphDatabase graphDatabase;
+
+    private Neo4jOperations template;
+
+    public NodeController(){}
+
+        @Autowired
+    public NodeController(NodeRepository nodeRepository, GraphDatabase graphDatabase, PlatformTransactionManager neo4jTransactionManager){
         this.nodeRepository = nodeRepository;
+        this.template = new Neo4jTemplate(graphDatabase, neo4jTransactionManager);
     }
-
-
-    public NodeController(){
-
-    }
-
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public Result<Node> findAll(){
-        Result<Node> nodes = nodeRepository.findAll();
+
+        Result<Node> nodes = template.findAll(Node.class);
+        //Result<Node> nodes = nodeRepository.findAll();
         return nodes;
 
     }
@@ -132,7 +140,6 @@ public class NodeController {
         Node node = nodeRepository.findByObjectID(objectID);
 
         if(node != null){
-            //nodeRepository.deleteByObjectID(objectID);
             nodeRepository.delete(node);
             return node;
         } else {

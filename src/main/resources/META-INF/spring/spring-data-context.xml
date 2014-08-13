@@ -7,6 +7,6 @@
 
 
     <!--neo4j:config storeDirectory="target/graph.db" /-->
-    <!-- <neo4j:config graphDatabaseService="graphDatabaseService" /> -->
+    <neo4j:config graphDatabaseService="graphDatabaseService" base-package="com.terrencewatson.domain"/>
     <neo4j:repositories base-package="com.terrencewatson.domain.repositories" />
 </beans>

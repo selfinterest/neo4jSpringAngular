@@ -74,7 +74,7 @@ public class StandaloneNodeControllerTest  {
         when(nodeRepository.findByObjectID("abcd")).thenReturn(testNode);
         when(nodeRepository.findByObjectID("efgh")).thenReturn(null);
         when(nodeRepository.deleteByObjectID("abcd")).thenReturn(testNode);
-        nodeController = new NodeController(nodeRepository);
+//        nodeController = new NodeController(nodeRepository);
         MockitoAnnotations.initMocks(this);
 
     }

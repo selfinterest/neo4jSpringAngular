@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Persistent;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.Indexed;
 import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.data.neo4j.template.Neo4jOperations;
 
 import java.io.IOException;
@@ -19,13 +21,7 @@ import java.io.IOException;
 
 
 @NodeEntity
-@Persistent
-
-
 public class Node {
-
-    @Autowired Neo4jOperations template;
-
 
     @Indexed(unique=true)
     String objectID;
@@ -38,6 +34,9 @@ public class Node {
 
     int order;
 
+    int time;
+
+    String qualifier;
 
     @GraphId
     Long id;
@@ -57,7 +56,6 @@ public class Node {
     }
 
     public void setObjectID(String objectID ) {
-        objectID = objectID.replace(".", "-");
         this.objectID = objectID;
     }
 
@@ -71,6 +69,10 @@ public class Node {
 
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setNodeType(String type) {
@@ -93,6 +95,21 @@ public class Node {
         this.order = order;
     }
 
+    public int getTime(){
+        return time;
+    }
+
+    public void setTime(int time){
+        this.time = time;
+    }
+
+    public String getQualifier() {
+        return qualifier;
+    }
+
+    public void setQualifier(String qualifier) {
+        this.qualifier = qualifier;
+    }
 
 
 
@@ -129,5 +146,7 @@ public class Node {
             return null;
         }
     }
+
+
 
 }
