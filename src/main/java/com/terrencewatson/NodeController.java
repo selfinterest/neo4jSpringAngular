@@ -18,6 +18,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
 
@@ -33,6 +34,9 @@ public class NodeController {
 
     @Autowired Neo4jOperations template;
 
+    //@Autowired RestTemplate template;
+
+    @Autowired
     private NodeRepository nodeRepository;
 
     @Autowired
@@ -40,11 +44,6 @@ public class NodeController {
 
     @Autowired
     private PlatformTransactionManager neo4jTransactionManager;
-
-
-    /*private Neo4jTemplate neo4jTemplate(){
-        return new Neo4jTemplate(graphDatabaseService, neo4jTransactionManager);
-    }*/
 
     @Autowired
     public NodeController(NodeRepository nodeRepository){
@@ -56,29 +55,13 @@ public class NodeController {
 
     }
 
-    /*@RequestMapping(value="/{id}")
-    @ResponseBody
-    public ResponseEntity<String> show(Model model, @PathVariable String id){
-        Node node = nodeRepository.findById(id);
-        if(node != null){
-            model.addAttribute("node", node);
-            return new ResponseEntity<String>(node.toString(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<String>("Not found", HttpStatus.NOT_FOUND);
-        }
-    }*/
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<String> findAll(){
-      Result<Node> nodes = nodeRepository.findAll();
-      ObjectMapper mapper = new ObjectMapper();
-        try {
-            return new ResponseEntity<String>(mapper.writeValueAsString(nodes), HttpStatus.OK);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return new ResponseEntity<String>("Not ok!", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public Result<Node> findAll(){
+        Result<Node> nodes = nodeRepository.findAll();
+        return nodes;
+
     }
 
     @RequestMapping(value="/-/byType/{nodeType}")
@@ -98,41 +81,32 @@ public class NodeController {
 
     }
 
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, produces="application/json", consumes="application/json")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> create(@RequestBody String nodeJson) throws JsonProcessingException {
-        Node node = Node.getNodeFromJsonString(nodeJson);
+    public ResponseEntity<String> create(@RequestBody Node node) throws JsonProcessingException {
 
-        //nodeRepository.save(node);
-        //ObjectMapper mapper = new ObjectMapper();
-        template.save(node);
+        nodeRepository.save(node);
         return new ResponseEntity<String>(node.toJson(), HttpStatus.OK);
-        //return new ResponseEntity<String>("OK", HttpStatus.OK);
+
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="/{id}")
+    @RequestMapping(method = RequestMethod.GET, value="/{objectID}", produces="application/json")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> getById(@PathVariable String id) {
-        Node node = nodeRepository.findByObjectID(id);
-
-        //Node node = (Node) template.getNode(1);
-        //Node node = nodeRepository.findById(id);
-        if(node != null){
-           return new ResponseEntity<String>(node.toJson(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<String>("NOT OK", HttpStatus.NOT_FOUND);
-        }
+    public Node getByObjectID(@PathVariable String objectID) {
+        Node node = nodeRepository.findByObjectID(objectID);
+        if(node == null) throw new ResourceNotFoundException();
+        return node;
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value="/{id}")
+    @RequestMapping(method = RequestMethod.PUT, value="/{objectID}", produces="application/json", consumes="application/json")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> updateById(@PathVariable String id, String nodeJson) {
+    public ResponseEntity<String> updateByObjectID(@PathVariable String objectID, @RequestBody Node newNode) {
 
-        Node node = nodeRepository.findByObjectID(id);
-        Node newNode = Node.getNodeFromJsonString(nodeJson);
+        Node node = nodeRepository.findByObjectID(objectID);
+
         if(node != null){
             node.setNodeType(newNode.getType());
             node.setDisplayName(newNode.getDisplayName());
@@ -156,6 +130,11 @@ public class NodeController {
         } else {
             return new ResponseEntity<String>("NOT OK", HttpStatus.NOT_FOUND);
         }
+
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    public class ResourceNotFoundException extends RuntimeException{
 
     }
 }
