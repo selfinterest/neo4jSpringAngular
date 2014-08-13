@@ -12,6 +12,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.neo4j.conversion.Handler;
+import org.springframework.data.neo4j.conversion.Result;
+import org.springframework.data.neo4j.conversion.ResultConverter;
+import org.springframework.data.neo4j.mapping.MappingPolicy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,6 +27,7 @@ import org.springframework.ui.Model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -54,6 +61,8 @@ public class StandaloneNodeControllerTest  {
     public void setUp(){
 
         this.testCollection = new ArrayList();
+        Result<Node> nodes;
+
         this.testNode = new Node();
         this.testNode.setNodeType("test");
         this.testNode.setDisplayName("Some node");
@@ -61,6 +70,7 @@ public class StandaloneNodeControllerTest  {
         this.testCollection.add(testNode);
         //mockMvc = MockMvcBuilders.standaloneSetup(new NodeController()).build();
         when(nodeRepository.findByType("course")).thenReturn(testCollection);
+        when(nodeRepository.findByType("blah")).thenReturn(new ArrayList());
         when(nodeRepository.findByObjectID("abcd")).thenReturn(testNode);
         when(nodeRepository.findByObjectID("efgh")).thenReturn(null);
         when(nodeRepository.deleteByObjectID("abcd")).thenReturn(testNode);
@@ -71,18 +81,19 @@ public class StandaloneNodeControllerTest  {
 
     @Test
     public void testShowByType() throws Exception {
-        String expectedJsonResponse = "[{\"objectID\":\"abcd\",\"displayName\":\"Some node\",\"type\":\"test\",\"label\":null,\"order\":0,\"id\":null}]";
-        model.addAttribute("nodeType", "course");
-        ResponseEntity<String> response = nodeController.showByNodeType("course");
-        assertTrue(response.getBody().contains(expectedJsonResponse));
+        Collection<Node> response = new ArrayList<Node>();
+        response = nodeController.showByNodeType("course");
+        assertTrue(response.contains(testNode));
+        response = nodeController.showByNodeType("blah");
+        assertTrue(response.isEmpty());
 
     }
 
     @Test
     public void testCreate() throws JsonProcessingException {
-        ResponseEntity<String> response = nodeController.create(this.testNode);
-        assertTrue(response.getBody().contains("Some node"));
-        assertTrue(response.toString().contains("200 OK"));
+        Node node = nodeController.create(this.testNode);
+        assertTrue(node.getDisplayName().contains("Some node"));
+
     }
 
 
@@ -91,8 +102,13 @@ public class StandaloneNodeControllerTest  {
         Node node  = nodeController.getByObjectID("abcd");
         assertTrue(node.getObjectID().contains("abcd"));
 
-        node = nodeController.getByObjectID("efgh");
-        assertTrue(node == null);
+        try {
+            node = nodeController.getByObjectID("efgh");
+        } catch (Exception e){
+            assertTrue(e instanceof NodeController.ResourceNotFoundException);
+        }
+
+
     }
 
     @Test
@@ -100,17 +116,24 @@ public class StandaloneNodeControllerTest  {
         Node newNode = new Node();
         newNode.setDisplayName("I am a new node");
         newNode.setNodeType("course");
-        ResponseEntity<String> response = nodeController.updateByObjectID("abcd", newNode);
-        assertTrue(response.getBody().contains("I am a new node"));
-        assertTrue(response.getBody().contains("abcd"));
-        response = nodeController.updateByObjectID("efgh", newNode);
+        Node response = nodeController.updateByObjectID("abcd", newNode);
+        assertTrue(response.getDisplayName().contains("I am a new node"));
+        assertTrue(response.getObjectID().contains("abcd"));
 
-        assertTrue(response.toString().contains("404"));
+        try {
+            response = nodeController.updateByObjectID("efgh", newNode);
+        } catch (Exception e){
+            assertTrue(e instanceof NodeController.ResourceNotFoundException);
+        }
+
+
+
     }
 
     @Test
     public void testDeleteById(){
-        ResponseEntity<String> response = nodeController.deleteById("abcd");
+        Node node = nodeController.deleteByObjectID("abcd");
+        assertTrue(node.getDisplayName().contains("Some node"));
     }
 
 }

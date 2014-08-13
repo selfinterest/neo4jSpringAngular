@@ -16,7 +16,7 @@ import java.util.Collection;
 public interface NodeRepository extends GraphRepository<Node>{
     //Node findByNodeId(String id);
     Node findById(String id);
-    Result<Node> findByType(String type);
+    Collection<Node> findByType(String type);
     Node findByObjectID(String objectID);
 
     Node deleteByObjectID(String objectID);

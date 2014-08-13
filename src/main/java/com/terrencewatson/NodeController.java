@@ -67,9 +67,9 @@ public class NodeController {
     @RequestMapping(value="/-/byType/{nodeType}", produces = "application/json")
     @ResponseBody
     @Transactional
-    public Result<Node> showByNodeType(@PathVariable String nodeType){
+    public Collection<Node> showByNodeType(@PathVariable String nodeType){
 
-        Result<Node> nodes = nodeRepository.findByType(nodeType);
+        Collection<Node> nodes = nodeRepository.findByType(nodeType);
         return nodes;
 
 
@@ -132,7 +132,8 @@ public class NodeController {
         Node node = nodeRepository.findByObjectID(objectID);
 
         if(node != null){
-            nodeRepository.deleteByObjectID(objectID);
+            //nodeRepository.deleteByObjectID(objectID);
+            nodeRepository.delete(node);
             return node;
         } else {
             throw new ResourceNotFoundException();
