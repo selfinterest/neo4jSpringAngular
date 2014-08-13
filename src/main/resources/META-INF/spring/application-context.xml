@@ -11,6 +11,10 @@
         <constructor-arg value="http://localhost:7474/db/data/" />
     </bean>
 
+    <bean id="template" class="org.springframework.data.neo4j.support.Neo4jTemplate">
+        <constructor-arg ref="graphDatabaseService"></constructor-arg>
+    </bean>
+
     <bean id="neo4jTransactionManagerService"
           class="org.neo4j.kernel.impl.transaction.SpringTransactionManager">
         <constructor-arg ref="graphDatabaseService" />
@@ -45,6 +49,16 @@
             </list>
         </property>
     </bean>
+
+    <!-- Spring Configuration needed to avoid URI using dots to be truncated -->
+    <!-- <bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+        <property name="useSuffixPatternMatch" value="false" />
+    </bean> -->
+    <!-- <bean id="handlerMapping"
+          class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <property name="useSuffixPatternMatch" value="false"/>
+    </bean> -->
 
 
 </beans>

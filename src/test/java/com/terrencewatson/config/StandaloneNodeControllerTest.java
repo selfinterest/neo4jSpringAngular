@@ -17,11 +17,15 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.neo4j.conversion.Handler;
 import org.springframework.data.neo4j.conversion.Result;
 import org.springframework.data.neo4j.conversion.ResultConverter;
+import org.springframework.data.neo4j.core.GraphDatabase;
 import org.springframework.data.neo4j.mapping.MappingPolicy;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.data.neo4j.template.Neo4jOperations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.ui.Model;
 
 
@@ -47,6 +51,17 @@ public class StandaloneNodeControllerTest  {
     @Mock
     private NodeRepository nodeRepository;
 
+    @Mock
+    GraphDatabase graphDatabase;
+
+    @Mock
+    PlatformTransactionManager neo4jTransactionManager;
+
+    /*@Mock
+    Neo4jOperations template;*/
+
+    @Mock
+    Neo4jTemplate template;
 
 
     @Mock
@@ -74,7 +89,8 @@ public class StandaloneNodeControllerTest  {
         when(nodeRepository.findByObjectID("abcd")).thenReturn(testNode);
         when(nodeRepository.findByObjectID("efgh")).thenReturn(null);
         when(nodeRepository.deleteByObjectID("abcd")).thenReturn(testNode);
-//        nodeController = new NodeController(nodeRepository);
+        template = mock(Neo4jTemplate.class);
+        nodeController = new NodeController(nodeRepository, graphDatabase, neo4jTransactionManager, template);
         MockitoAnnotations.initMocks(this);
 
     }

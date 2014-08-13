@@ -9,10 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
@@ -47,6 +44,11 @@ public class AppConfig extends WebMvcConfigurerAdapter {
         return resolver;
     }
 
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        //super.configurePathMatch(configurer);
+        configurer.setUseRegisteredSuffixPatternMatch(true);
+    }
 
     /*@Bean(destroyMethod = "shutdown")
     public GraphDatabaseService graphDatabaseService(){

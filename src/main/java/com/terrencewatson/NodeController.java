@@ -57,9 +57,9 @@ public class NodeController {
     public NodeController(){}
 
         @Autowired
-    public NodeController(NodeRepository nodeRepository, GraphDatabase graphDatabase, PlatformTransactionManager neo4jTransactionManager){
+    public NodeController(NodeRepository nodeRepository, GraphDatabase graphDatabase, PlatformTransactionManager neo4jTransactionManager, Neo4jTemplate template){
         this.nodeRepository = nodeRepository;
-        this.template = new Neo4jTemplate(graphDatabase, neo4jTransactionManager);
+        this.template = template;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
