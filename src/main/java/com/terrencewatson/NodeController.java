@@ -64,19 +64,13 @@ public class NodeController {
 
     }
 
-    @RequestMapping(value="/-/byType/{nodeType}")
+    @RequestMapping(value="/-/byType/{nodeType}", produces = "application/json")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> showByNodeType(@PathVariable String nodeType){
+    public Result<Node> showByNodeType(@PathVariable String nodeType){
 
-        Collection<Node> nodes = nodeRepository.findByType(nodeType);
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return new ResponseEntity<String>(mapper.writeValueAsString(nodes), HttpStatus.OK);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return new ResponseEntity<String>("Not ok!", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        Result<Node> nodes = nodeRepository.findByType(nodeType);
+        return nodes;
 
 
     }
@@ -84,10 +78,15 @@ public class NodeController {
     @RequestMapping(method = RequestMethod.POST, produces="application/json", consumes="application/json")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> create(@RequestBody Node node) throws JsonProcessingException {
+    public Node create(@RequestBody Node node) throws JsonProcessingException {
 
-        nodeRepository.save(node);
-        return new ResponseEntity<String>(node.toJson(), HttpStatus.OK);
+        try {
+            nodeRepository.save(node);
+            return node;
+        } catch (Exception e){
+            throw new InternalServerErrorException();
+        }
+
 
     }
 
@@ -103,38 +102,51 @@ public class NodeController {
     @RequestMapping(method = RequestMethod.PUT, value="/{objectID}", produces="application/json", consumes="application/json")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> updateByObjectID(@PathVariable String objectID, @RequestBody Node newNode) {
+    public Node updateByObjectID(@PathVariable String objectID, @RequestBody Node newNode) {
 
         Node node = nodeRepository.findByObjectID(objectID);
 
-        if(node != null){
-            node.setNodeType(newNode.getType());
-            node.setDisplayName(newNode.getDisplayName());
-            node.setLabel(newNode.getLabel());
-            node.setOrder(newNode.getOrder());
-            nodeRepository.save(node);
-            return new ResponseEntity<String>(node.toJson(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<String>("NOT OK", HttpStatus.NOT_FOUND);
+        try {
+            if(node != null){
+                node.setNodeType(newNode.getType());
+                node.setDisplayName(newNode.getDisplayName());
+                node.setLabel(newNode.getLabel());
+                node.setOrder(newNode.getOrder());
+                nodeRepository.save(node);
+                return node;
+            } else {
+                throw new ResourceNotFoundException();
+            }
+        } catch (ResourceNotFoundException e){
+            throw new ResourceNotFoundException();
+        } catch (Exception e){
+            throw new InternalServerErrorException();
         }
+
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value="/{id}")
+    @RequestMapping(method = RequestMethod.DELETE, value="/{objectID}", produces="application/json")
     @ResponseBody
     @Transactional
-    public ResponseEntity<String> deleteById(@PathVariable String id ) {
-        Node node = nodeRepository.findById(id);
+    public Node deleteByObjectID(@PathVariable String objectID ) {
+        Node node = nodeRepository.findByObjectID(objectID);
+
         if(node != null){
-            nodeRepository.deleteByObjectID(id);
-            return new ResponseEntity<String>(node.toJson(), HttpStatus.OK);
+            nodeRepository.deleteByObjectID(objectID);
+            return node;
         } else {
-            return new ResponseEntity<String>("NOT OK", HttpStatus.NOT_FOUND);
+            throw new ResourceNotFoundException();
         }
 
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     public class ResourceNotFoundException extends RuntimeException{
+
+    }
+
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    private class InternalServerErrorException extends RuntimeException {
 
     }
 }
