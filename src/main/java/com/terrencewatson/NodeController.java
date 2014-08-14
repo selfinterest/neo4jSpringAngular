@@ -22,7 +22,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by twatson on 8/11/14.
@@ -31,14 +34,6 @@ import java.util.Collection;
 @Controller
 @RequestMapping("/api/node")
 public class NodeController {
-    /*@Autowired
-    NodeRepository nodeRepository;*/
-
-
-
-    //@Autowired Neo4jOperations template;
-
-    //@Autowired RestTemplate template;
 
     @Autowired
     private NodeRepository nodeRepository;
@@ -78,6 +73,7 @@ public class NodeController {
     public Collection<Node> showByNodeType(@PathVariable String nodeType){
 
         Collection<Node> nodes = nodeRepository.findByType(nodeType);
+
         return nodes;
 
 
@@ -89,7 +85,8 @@ public class NodeController {
     public Node create(@RequestBody Node node) throws JsonProcessingException {
 
         try {
-            nodeRepository.save(node);
+            template.save(node);
+            //nodeRepository.save(node);
             return node;
         } catch (Exception e){
             throw new InternalServerErrorException();
@@ -113,6 +110,24 @@ public class NodeController {
     public Node updateByObjectID(@PathVariable String objectID, @RequestBody Node newNode) {
 
         Node node = nodeRepository.findByObjectID(objectID);
+        try {
+            if (node != null) {
+                node.update(newNode);
+                template.save(node);
+                return node;
+            } else {
+                throw new ResourceNotFoundException();
+            }
+        } catch(ResourceNotFoundException e){
+            throw e;
+        }
+
+        /*
+        //TODO: abstract this bit of reflection out
+        Class NodeClass = node.getClass();
+        Method[] allMethods = NodeClass.getMethods();
+        List<Method> setters = new ArrayList<Method>();
+
 
         try {
             if(node != null){
@@ -129,7 +144,7 @@ public class NodeController {
             throw new ResourceNotFoundException();
         } catch (Exception e){
             throw new InternalServerErrorException();
-        }
+        }*/
 
     }
 

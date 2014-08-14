@@ -79,7 +79,7 @@ public class StandaloneNodeControllerTest  {
         Result<Node> nodes;
 
         this.testNode = new Node();
-        this.testNode.setNodeType("test");
+        this.testNode.setType("test");
         this.testNode.setDisplayName("Some node");
         this.testNode.setObjectID("abcd");
         this.testCollection.add(testNode);
@@ -131,7 +131,7 @@ public class StandaloneNodeControllerTest  {
     public void testUpdateByObjectID(){
         Node newNode = new Node();
         newNode.setDisplayName("I am a new node");
-        newNode.setNodeType("course");
+        newNode.setType("course");
         Node response = nodeController.updateByObjectID("abcd", newNode);
         assertTrue(response.getDisplayName().contains("I am a new node"));
         assertTrue(response.getObjectID().contains("abcd"));
