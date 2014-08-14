@@ -1,5 +1,6 @@
-package com.terrencewatson.domain;
+package com.terrencewatson.domain.relationships;
 
+import com.terrencewatson.domain.relationships.AbstractArc;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 
 /**
@@ -7,4 +8,5 @@ import org.springframework.data.neo4j.annotation.RelationshipEntity;
  */
 @RelationshipEntity(type = "COVERS")
 public class Covers extends AbstractArc {
+
 }

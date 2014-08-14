@@ -1,5 +1,6 @@
-package com.terrencewatson.domain;
+package com.terrencewatson.domain.relationships;
 
+import com.terrencewatson.domain.Node;
 import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
 import org.springframework.data.neo4j.annotation.StartNode;
