@@ -54,13 +54,13 @@ public class RelationshipController {
             //Now capitalize the first letter
             className = className.substring(0, 1).toUpperCase() + className.substring(1);
             className = "com.terrencewatson.domain.relationships." + className;
-            Class<?> RelationshipClass = Class.forName(className);
+            Class<AbstractArc> RelationshipClass = (Class<AbstractArc>) Class.forName(className);
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-            AbstractArc relationshipFromJson = (AbstractArc) mapper.readValue(relationshipJson, RelationshipClass);
+            AbstractArc relationshipFromJson = mapper.readValue(relationshipJson, RelationshipClass);
 
-            AbstractArc relationshipFromTemplate = (AbstractArc) template.createRelationshipBetween(nodeA, nodeB, RelationshipClass, relationshipType, false);
+            AbstractArc relationshipFromTemplate = template.createRelationshipBetween(nodeA, nodeB, RelationshipClass, relationshipType, false);
 
             relationshipFromTemplate.setDisplayName(relationshipFromJson.getDisplayName());
             relationshipFromTemplate.setWeight(relationshipFromJson.getWeight());
@@ -72,33 +72,7 @@ public class RelationshipController {
         } catch (IOException e) {
             throw new InternalServerErrorException();
         }
-        //T relationship = null;
-        /*Node nodeA = nodeRepository.findByObjectID(objectID1);
-        Node nodeB = nodeRepository.findByObjectID(objectID2);
-
-        T relationship;
-
-  /*      T.class;
-
-        //T relationship;
-
-        try {
-            relationship = Class.forName(relationshipType);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        if(nodeA == null || nodeB == null) throw new ResourceNotFoundException();
-        try {
-            //Class<T> relationshipClass = (Class<T>) Class.forName("com.terrencewatosn.domain.relationships." + relationshipType);
-            relationship = (T) template.createRelationshipBetween(nodeA, nodeB, relationshipFromRequest.getClass(), relationshipType, false);
-            relationship.setDisplayName(relationshipFromRequest.getDisplayName());
-            relationship.setWeight(relationshipFromRequest.getWeight());
-            template.save(relationship);
-
-        } catch (Exception e){
-            System.out.print(e.getMessage());
-            throw new InternalServerErrorException();
-        }*/
+        
         return relationship;
     }
 
