@@ -105,6 +105,12 @@
             <artifactId>cdi-api</artifactId>
             <version>1.0-SP1</version>
         </dependency>
+
+        <dependency>
+            <groupId>us.monoid.web</groupId>
+            <artifactId>resty</artifactId>
+            <version>0.3.2</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

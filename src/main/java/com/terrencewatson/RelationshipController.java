@@ -72,7 +72,7 @@ public class RelationshipController {
         } catch (IOException e) {
             throw new InternalServerErrorException();
         }
-        
+
         return relationship;
     }
 
