@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.terrencewatson.domain.Node;
+import com.terrencewatson.domain.repositories.NodeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.annotation.EndNode;
 import org.springframework.data.neo4j.annotation.GraphId;
 import org.springframework.data.neo4j.annotation.RelationshipEntity;
@@ -20,15 +22,18 @@ import java.util.Map;
 @RelationshipEntity
 public abstract class AbstractArc {
 
-    private final Class<? extends AbstractArc> theClass;
+    /*private final Class<? extends AbstractArc> theClass;*/
+
     String displayName;
     String weight;
 
     @GraphId
     Long id;
 
+
+
     public AbstractArc(){
-        this.theClass = this.getClass();
+        //this.theClass = this.getClass();
     }
 
     public String getDisplayName() {
@@ -56,8 +61,17 @@ public abstract class AbstractArc {
         this.id = id;
     }
 
-    @StartNode private Node objectID1;
-    @EndNode private Node objectID2;
+
+    @StartNode private Node object1;
+    @EndNode private Node object2;
+
+    /*public Node getObjectID1() {
+        return objectID1;
+    }
+
+    public Node getObjectID2() {
+        return objectID2;
+    }*/
 
     public static Class generateRelationshipClassFromString(String relationshipType){
         String className = relationshipType.toLowerCase();
@@ -78,6 +92,38 @@ public abstract class AbstractArc {
 
         Class<AbstractArc> relationshipClass = AbstractArc.generateRelationshipClassFromString(relationshipType);
         AbstractArc arc = mapper.readValue(s, relationshipClass);
+
+        //Convert the ObjectIDs to actual Nodes
+
+        //arc.objectID1 = arc.nodeRepository.findByObjectID((String)arc.objectID1);
         return arc;
+    }
+
+    public static AbstractArc getArcFromJsonString(String s, String relationshipType, String ObjectID1, String ObjectID2, NodeRepository nodeRepository) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
+        Class<AbstractArc> relationshipClass = AbstractArc.generateRelationshipClassFromString(relationshipType);
+
+        AbstractArc arc = mapper.readValue(s, relationshipClass);
+        Node node1 = nodeRepository.findByObjectID(ObjectID1);
+        Node node2 = nodeRepository.findByObjectID(ObjectID2);
+        if(node1 == null || node2 == null ){
+            System.out.println("Why is one of these nodes null?");
+        }
+        arc.object1 = node1;
+        arc.object2 = node2;
+        return arc;
+    }
+
+    public static AbstractArc getArcFromJsonString(String s, NodeRepository nodeRepository) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        Map<String, Object> data = mapper.readValue(s, Map.class);
+        String type = (String) data.get("type");
+        String objectID1 = (String) data.get("objectID1");
+        String objectID2 = (String) data.get("objectID2");
+
+        return AbstractArc.getArcFromJsonString(s, type, objectID1, objectID2, nodeRepository);
     }
 }

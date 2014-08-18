@@ -39,6 +39,7 @@ public class ImportServiceTest {
 
     JsonNode jsonNode;
     JsonNode jsonNodeForArcs;
+
     ImportService importService = new ImportService();
 
     @Before
