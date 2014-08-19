@@ -126,12 +126,13 @@ public class ImportService {
 
             //Class<AbstractArc> relationshipClass = AbstractArc.generateRelationshipClassFromString(type);
             AbstractArc arc = AbstractArc.getArcFromJsonString(jsonNode.toString(), nodeRepository);
+            if(arc != null) template.save(arc);
 
-            try {
+            /*try {
                 template.save(arc);
             } catch (NullPointerException e){
                 System.out.println("Why is arc null?");
-            }
+            }*/
 
             //result.add(arc);
         }

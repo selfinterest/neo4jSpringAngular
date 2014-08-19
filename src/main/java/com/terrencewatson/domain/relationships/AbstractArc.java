@@ -110,6 +110,9 @@ public abstract class AbstractArc {
         Node node2 = nodeRepository.findByObjectID(ObjectID2);
         if(node1 == null || node2 == null ){
             System.out.println("Why is one of these nodes null?");
+            System.out.println(ObjectID1);
+            System.out.println(ObjectID2);
+            return null;
         }
         arc.object1 = node1;
         arc.object2 = node2;
